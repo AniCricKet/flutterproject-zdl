@@ -1,36 +1,33 @@
+//import 'dart:html';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const BmiApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class BmiApp extends StatelessWidget {
+  const BmiApp({super.key});
+  static const _title = "CMSD BMI App";
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: _title,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+        // This is the theme of CMSD BMI Application.
+        primarySwatch: Colors.orange,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const BmiHomePage(title: _title),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class BmiHomePage extends StatefulWidget {
+  const BmiHomePage({super.key, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -44,20 +41,99 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<BmiHomePage> createState() => _BmiHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _BmiHomePageState extends State<BmiHomePage> {
+  static const int minHeightFeet = 2;
+  static const int maxHeightFeet = 8;
+  static const int minHeightInches = 0;
+  static const int maxHeightInches = 11;
+  static const int minWeight = 30;
+  static const int maxWeight = 500;
+  static const int inchesPerFeet = 12;
+  static const double multiplier = 703;
+  static const int valueForBlankField = -1;
+  static const int numberOfFixedDigits = 1;
 
-  void _incrementCounter() {
+  String _bmiAsString = "";
+  String _errorMessage = "";
+  // Users cannot type negative numbers
+  int _feetPortionOfHeight = valueForBlankField;
+  int _inchesPortionOfHeight = valueForBlankField;
+  int _weight = valueForBlankField;
+
+  void _calculateBmi() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      // so that the display can reflect the updated values.
+
+      // Validate our input: Apart from cases to validate from the requirements
+      // document
+      if ((_feetPortionOfHeight == valueForBlankField) &&
+          (_inchesPortionOfHeight == valueForBlankField) &&
+          (_weight == valueForBlankField)) {
+        _errorMessage = "Please provide height and weight.";
+        return;
+      }
+
+      if ((_feetPortionOfHeight == valueForBlankField) &&
+          (_inchesPortionOfHeight == valueForBlankField)) {
+        _errorMessage = "Please provide height.";
+        return;
+      }
+
+      if ((_feetPortionOfHeight < minHeightFeet) ||
+          (_feetPortionOfHeight > maxHeightFeet)) {
+        _errorMessage =
+            "Feet portion of height should be between $minHeightFeet and $maxHeightFeet.";
+        return;
+      }
+
+      int inchesPortionOfHeight =
+          _inchesPortionOfHeight; // temporary variable to preserve user input.
+      if (inchesPortionOfHeight == valueForBlankField) {
+        inchesPortionOfHeight = minHeightInches;
+      }
+
+      if ((inchesPortionOfHeight < minHeightInches) ||
+          (inchesPortionOfHeight > maxHeightInches)) {
+        _errorMessage =
+            "Incehs portion of height should be between $minHeightInches and $maxHeightInches";
+        return;
+      }
+
+      // Ensure that when the feet portion of height is 8 feet, then inches are 0 or not provided
+      if ((_feetPortionOfHeight == maxHeightFeet) &&
+          (inchesPortionOfHeight != minHeightInches)) {
+        _errorMessage =
+            "When height is $maxHeightFeet feet, inches portion should be blank or $minHeightInches.";
+        return;
+      }
+
+      // Validate weight
+      if (_weight == valueForBlankField) {
+        _errorMessage = "Please provide weight.";
+        return;
+      }
+
+      if ((_weight < minWeight) || (_weight > maxWeight)) {
+        _errorMessage =
+            "Please provide weight between $minWeight and $maxWeight pounds.";
+        return;
+      }
+
+      _errorMessage = ""; // no error
+
+      // now compute the BMI
+      int totalHeightInInches =
+          (_feetPortionOfHeight * inchesPerFeet) + inchesPortionOfHeight;
+      double bmi =
+          ((_weight.toDouble()) / (pow(totalHeightInInches, 2).toDouble())) *
+              multiplier;
+
+      _bmiAsString = bmi.toStringAsFixed(numberOfFixedDigits);
     });
   }
 
@@ -79,37 +155,73 @@ class _MyHomePageState extends State<MyHomePage> {
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
+          // Per Requirement we should have three input boxes (two for height,
+          // one for weight) and a calculate button
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            TextField(
+              showCursor: true,
+              maxLength: 1,
+              enabled: true,
+              decoration: const InputDecoration(
+                labelText: "Feet portion of height",
+              ),
+              keyboardType: TextInputType.number,
+              onChanged: (value) => _feetPortionOfHeight =
+                  (value.trim() == "") ? valueForBlankField : int.parse(value),
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly,
+              ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            TextField(
+              showCursor: true,
+              maxLength: 2,
+              enabled: true,
+              decoration: const InputDecoration(
+                labelText: "Inches portion of height",
+              ),
+              keyboardType: TextInputType.number,
+              onChanged: (value) => _inchesPortionOfHeight =
+                  (value.trim() == "") ? valueForBlankField : int.parse(value),
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+            ),
+            TextField(
+              showCursor: true,
+              maxLength: 3,
+              enabled: true,
+              decoration: const InputDecoration(
+                labelText: "Weight in pounds",
+              ),
+              keyboardType: TextInputType.number,
+              onChanged: (value) => _weight =
+                  (value.trim() == "") ? valueForBlankField : int.parse(value),
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+            ),
+            ElevatedButton(
+              onPressed: _calculateBmi,
+              child: const Text("Calculate"),
+            ),
+            Visibility(
+                visible: (_errorMessage != ""),
+                child: Text(_errorMessage,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ))),
+            Visibility(
+              visible: ((_errorMessage == "") && (_bmiAsString != "")),
+              child: Text(
+                'BMI is: $_bmiAsString',
+                style: Theme.of(context).textTheme.headline4,
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
