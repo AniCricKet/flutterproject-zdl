@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 void main() {
-  runApp(const BmiApp());
+  runApp(const LnyApp());
 }
 
-class BmiApp extends StatelessWidget {
-  const BmiApp({super.key});
-  static const _title = "CMSD BMI App";
+class LnyApp extends StatelessWidget {
+  const LnyApp({super.key});
+  static const _title = "Lunar New Year App";
 
   // This widget is the root of your application.
   @override
@@ -18,8 +18,7 @@ class BmiApp extends StatelessWidget {
     return MaterialApp(
       title: _title,
       theme: ThemeData(
-        // This is the theme of CMSD BMI Application.
-        primarySwatch: Colors.orange,
+        primarySwatch: Colors.blue,
       ),
       home: const BmiHomePage(title: _title),
     );
@@ -45,25 +44,20 @@ class BmiHomePage extends StatefulWidget {
 }
 
 class _BmiHomePageState extends State<BmiHomePage> {
-  static const int minHeightFeet = 2;
-  static const int maxHeightFeet = 8;
-  static const int minHeightInches = 0;
-  static const int maxHeightInches = 11;
-  static const int minWeight = 30;
-  static const int maxWeight = 500;
-  static const int inchesPerFeet = 12;
-  static const double multiplier = 703;
+  static const int minYear = 0;
+  static const int maxYear = 9999;
   static const int valueForBlankField = -1;
   static const int numberOfFixedDigits = 1;
+  static const int currentYear = 2023;
 
-  String _bmiAsString = "";
+  String _zodAsString = "";
   String _errorMessage = "";
   // Users cannot type negative numbers
-  int _feetPortionOfHeight = valueForBlankField;
+  int _year = valueForBlankField;
   int _inchesPortionOfHeight = valueForBlankField;
   int _weight = valueForBlankField;
 
-  void _calculateBmi() {
+  void _calculateLNY() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -71,69 +65,20 @@ class _BmiHomePageState extends State<BmiHomePage> {
 
       // Validate our input: Apart from cases to validate from the requirements
       // document
-      if ((_feetPortionOfHeight == valueForBlankField) &&
-          (_inchesPortionOfHeight == valueForBlankField) &&
-          (_weight == valueForBlankField)) {
-        _errorMessage = "Please provide height and weight.";
+      if (_year == valueForBlankField) {
+        _errorMessage = "Please provide Birth Year.";
         return;
       }
 
-      if ((_feetPortionOfHeight == valueForBlankField) &&
-          (_inchesPortionOfHeight == valueForBlankField)) {
-        _errorMessage = "Please provide height.";
-        return;
-      }
-
-      if ((_feetPortionOfHeight < minHeightFeet) ||
-          (_feetPortionOfHeight > maxHeightFeet)) {
-        _errorMessage =
-            "Feet portion of height should be between $minHeightFeet and $maxHeightFeet.";
-        return;
-      }
-
-      int inchesPortionOfHeight =
-          _inchesPortionOfHeight; // temporary variable to preserve user input.
-      if (inchesPortionOfHeight == valueForBlankField) {
-        inchesPortionOfHeight = minHeightInches;
-      }
-
-      if ((inchesPortionOfHeight < minHeightInches) ||
-          (inchesPortionOfHeight > maxHeightInches)) {
-        _errorMessage =
-            "Incehs portion of height should be between $minHeightInches and $maxHeightInches";
-        return;
-      }
-
-      // Ensure that when the feet portion of height is 8 feet, then inches are 0 or not provided
-      if ((_feetPortionOfHeight == maxHeightFeet) &&
-          (inchesPortionOfHeight != minHeightInches)) {
-        _errorMessage =
-            "When height is $maxHeightFeet feet, inches portion should be blank or $minHeightInches.";
-        return;
-      }
-
-      // Validate weight
-      if (_weight == valueForBlankField) {
-        _errorMessage = "Please provide weight.";
-        return;
-      }
-
-      if ((_weight < minWeight) || (_weight > maxWeight)) {
-        _errorMessage =
-            "Please provide weight between $minWeight and $maxWeight pounds.";
+      if ((_year < minYear) || (_year > maxYear)) {
+        _errorMessage = "Birth Year should be between $minYear and $maxYear.";
         return;
       }
 
       _errorMessage = ""; // no error
 
-      // now compute the BMI
-      int totalHeightInInches =
-          (_feetPortionOfHeight * inchesPerFeet) + inchesPortionOfHeight;
-      double bmi =
-          ((_weight.toDouble()) / (pow(totalHeightInInches, 2).toDouble())) *
-              multiplier;
-
-      _bmiAsString = bmi.toStringAsFixed(numberOfFixedDigits);
+      // now compute the Lunar Sign
+      String _zodAsString = "Undir";
     });
   }
 
@@ -161,10 +106,10 @@ class _BmiHomePageState extends State<BmiHomePage> {
           children: <Widget>[
             TextField(
               showCursor: true,
-              maxLength: 1,
+              maxLength: 4,
               enabled: true,
               decoration: const InputDecoration(
-                labelText: "Feet portion of height",
+                labelText: "Please enter a year",
               ),
               keyboardType: TextInputType.number,
               onChanged: (value) => _feetPortionOfHeight =
@@ -173,36 +118,8 @@ class _BmiHomePageState extends State<BmiHomePage> {
                 FilteringTextInputFormatter.digitsOnly,
               ],
             ),
-            TextField(
-              showCursor: true,
-              maxLength: 2,
-              enabled: true,
-              decoration: const InputDecoration(
-                labelText: "Inches portion of height",
-              ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) => _inchesPortionOfHeight =
-                  (value.trim() == "") ? valueForBlankField : int.parse(value),
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
-              ],
-            ),
-            TextField(
-              showCursor: true,
-              maxLength: 3,
-              enabled: true,
-              decoration: const InputDecoration(
-                labelText: "Weight in pounds",
-              ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) => _weight =
-                  (value.trim() == "") ? valueForBlankField : int.parse(value),
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
-              ],
-            ),
             ElevatedButton(
-              onPressed: _calculateBmi,
+              onPressed: _calculateLNY,
               child: const Text("Calculate"),
             ),
             Visibility(
