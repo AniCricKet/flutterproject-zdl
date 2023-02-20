@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 void main() {
-  runApp(const BmiApp());
+  runApp(const CalculatorApp());
 }
 
-class BmiApp extends StatelessWidget {
-  const BmiApp({super.key});
-  static const _title = "CMSD BMI App";
+class CalculatorApp extends StatelessWidget {
+  const CalculatorApp({super.key});
+  static const _title = "ZDL Carbon Emmisions Calculator";
 
   // This widget is the root of your application.
   @override
@@ -19,7 +19,7 @@ class BmiApp extends StatelessWidget {
       title: _title,
       theme: ThemeData(
         // This is the theme of CMSD BMI Application.
-        primarySwatch: Colors.orange,
+        primarySwatch: Colors.lightBlue,
       ),
       home: const BmiHomePage(title: _title),
     );
@@ -164,7 +164,7 @@ class _BmiHomePageState extends State<BmiHomePage> {
               maxLength: 1,
               enabled: true,
               decoration: const InputDecoration(
-                labelText: "Feet portion of height",
+                labelText: "What Car Model do you use",
               ),
               keyboardType: TextInputType.number,
               onChanged: (value) => _feetPortionOfHeight =
@@ -178,7 +178,7 @@ class _BmiHomePageState extends State<BmiHomePage> {
               maxLength: 2,
               enabled: true,
               decoration: const InputDecoration(
-                labelText: "Inches portion of height",
+                labelText: "Approximated Distance Driven in the last week",
               ),
               keyboardType: TextInputType.number,
               onChanged: (value) => _inchesPortionOfHeight =
@@ -192,7 +192,7 @@ class _BmiHomePageState extends State<BmiHomePage> {
               maxLength: 3,
               enabled: true,
               decoration: const InputDecoration(
-                labelText: "Weight in pounds",
+                labelText: "How many flights have you taken in the last week?",
               ),
               keyboardType: TextInputType.number,
               onChanged: (value) => _weight =
