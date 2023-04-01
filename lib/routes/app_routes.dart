@@ -1,7 +1,5 @@
 import 'package:zero_degree_lab_s_calculator/presentation/welcome_screen/welcome_screen.dart';
 import 'package:zero_degree_lab_s_calculator/presentation/welcome_screen/binding/welcome_binding.dart';
-import 'package:zero_degree_lab_s_calculator/presentation/login_screen/login_screen.dart';
-import 'package:zero_degree_lab_s_calculator/presentation/login_screen/binding/login_binding.dart';
 import 'package:zero_degree_lab_s_calculator/presentation/home_container_screen/home_container_screen.dart';
 import 'package:zero_degree_lab_s_calculator/presentation/home_container_screen/binding/home_container_binding.dart';
 import 'package:zero_degree_lab_s_calculator/presentation/dash_board_screen/dash_board_screen.dart';
@@ -24,8 +22,6 @@ import 'package:get/get.dart';
 
 class AppRoutes {
   static const String welcomeScreen = '/welcome_screen';
-
-  static const String loginScreen = '/login_screen';
 
   static const String homePage = '/home_page';
 
@@ -57,13 +53,6 @@ class AppRoutes {
       page: () => WelcomeScreen(),
       bindings: [
         WelcomeBinding(),
-      ],
-    ),
-    GetPage(
-      name: loginScreen,
-      page: () => LoginScreen(),
-      bindings: [
-        LoginBinding(),
       ],
     ),
     GetPage(
