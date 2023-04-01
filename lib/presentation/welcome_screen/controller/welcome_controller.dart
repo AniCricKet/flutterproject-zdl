@@ -5,14 +5,6 @@ class WelcomeController extends GetxController {
   Rx<WelcomeModel> welcomeModelObj = WelcomeModel().obs;
 
   @override
-  void onReady() {
-    super.onReady();
-    Future.delayed(const Duration(milliseconds: 3000), () {
-      Get.toNamed(AppRoutes.loginScreen);
-    });
-  }
-
-  @override
   void onClose() {
     super.onClose();
   }
