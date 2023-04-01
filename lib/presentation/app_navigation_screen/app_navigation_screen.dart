@@ -102,9 +102,7 @@ class AppNavigationScreen extends GetWidget<AppNavigationController> {
                                                                   .bluegray400))
                                                     ]))),
                                         GestureDetector(
-                                            onTap: () {
-                                              onTapLogin();
-                                            },
+                                            onTap: () {},
                                             child: Container(
                                                 decoration:
                                                     AppDecoration.fillWhiteA700,
@@ -522,40 +520,36 @@ class AppNavigationScreen extends GetWidget<AppNavigationController> {
   onTapWelcome() {
     Get.toNamed(AppRoutes.welcomeScreen);
   }
+}
 
-  onTapLogin() {
-    Get.toNamed(AppRoutes.loginScreen);
-  }
+onTapHomeContainer() {
+  Get.toNamed(AppRoutes.homeContainerScreen);
+}
 
-  onTapHomeContainer() {
-    Get.toNamed(AppRoutes.homeContainerScreen);
-  }
+onTapDashBoard() {
+  Get.toNamed(AppRoutes.dashBoardScreen);
+}
 
-  onTapDashBoard() {
-    Get.toNamed(AppRoutes.dashBoardScreen);
-  }
+onTapCurrenciesTradingTwo() {
+  Get.toNamed(AppRoutes.currenciesTradingTwoScreen);
+}
 
-  onTapCurrenciesTradingTwo() {
-    Get.toNamed(AppRoutes.currenciesTradingTwoScreen);
-  }
+onTapCurrenciesTrading() {
+  Get.toNamed(AppRoutes.currenciesTradingScreen);
+}
 
-  onTapCurrenciesTrading() {
-    Get.toNamed(AppRoutes.currenciesTradingScreen);
-  }
+onTapCurrenciesTradingOne() {
+  Get.toNamed(AppRoutes.currenciesTradingOneScreen);
+}
 
-  onTapCurrenciesTradingOne() {
-    Get.toNamed(AppRoutes.currenciesTradingOneScreen);
-  }
+onTapPortfolioOne() {
+  Get.toNamed(AppRoutes.portfolioOneScreen);
+}
 
-  onTapPortfolioOne() {
-    Get.toNamed(AppRoutes.portfolioOneScreen);
-  }
+onTapLoadFunds() {
+  Get.toNamed(AppRoutes.loadFundsScreen);
+}
 
-  onTapLoadFunds() {
-    Get.toNamed(AppRoutes.loadFundsScreen);
-  }
-
-  onTapPortfolio() {
-    Get.toNamed(AppRoutes.portfolioScreen);
-  }
+onTapPortfolio() {
+  Get.toNamed(AppRoutes.portfolioScreen);
 }
